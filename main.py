@@ -1,5 +1,6 @@
+
 from PyQt5.QtWidgets import QApplication, QMainWindow, QGridLayout, QWidget, QTableWidget, QTableWidgetItem, \
-    QHBoxLayout, QVBoxLayout, QPushButton, QTextEdit, QPlainTextEdit,QLineEdit
+    QHBoxLayout, QVBoxLayout, QPushButton, QTextEdit, QPlainTextEdit,QLineEdit,QHeaderView
 from PyQt5.QtCore import Qt
 from  PostgreS import PostgreS
 
@@ -31,13 +32,13 @@ class Program():
         self.mainWidget.setWindowTitle('Магазин дисков')
 
         # Set the alignment to the headers
-        self.table.horizontalHeaderItem(0).setTextAlignment(Qt.AlignLeft)
-        self.table.horizontalHeaderItem(1).setTextAlignment(Qt.AlignHCenter)
-        self.table.horizontalHeaderItem(2).setTextAlignment(Qt.AlignRight)
-        self.table.setItem(0, 0, QTableWidgetItem("Text in column 1"))
-        self.table.setItem(0, 1, QTableWidgetItem("Text in column 2"))
-        self.table.setItem(0, 2, QTableWidgetItem("Text in column 3"))
-        self.table.setItem(1, 0, QTableWidgetItem('xxx'))
+        # self.table.horizontalHeaderItem(0).setTextAlignment(Qt.AlignLeft)
+        # self.table.horizontalHeaderItem(1).setTextAlignment(Qt.AlignHCenter)
+        # self.table.horizontalHeaderItem(2).setTextAlignment(Qt.AlignRight)
+        # self.table.setItem(0, 0, QTableWidgetItem("Text in column 1"))
+        # self.table.setItem(0, 1, QTableWidgetItem("Text in column 2"))
+        # self.table.setItem(0, 2, QTableWidgetItem("Text in column 3"))
+        # self.table.setItem(1, 0, QTableWidgetItem('xxx'))
         self.table.resizeColumnToContents(2)
         self.table.resizeColumnToContents(1)
         self.table.resizeColumnToContents(0)
@@ -55,25 +56,36 @@ class Program():
 
 
     def connect(self):
-        postgres = PostgreS()
-        postgres.connect()
-        self.postgres = postgres
+        try:     #Реализация объекта класса
+            postgres = PostgreS()
+            postgres.connect()
+            self.postgres = postgres
+        except:
+            print('Error')
 
     def update(self):
-        data = self.postgres.getData()
+        data = self.postgres.getData()#Реализация запроса
         size = len(data)
+        columns = self.postgres.getColumn()
+        sizeColumn = len(columns)
+        self.table.setColumnCount(sizeColumn)
+        self.table.setHorizontalHeaderLabels(columns)
         print(size)
-        self.table.setRowCount(size)
+        print(self.postgres.getColumn())
+        self.table.setRowCount(size)   #Задача колличества столбцов
+        self.table.setHorizontalHeaderLabels(columns)
+        self.table.resizeColumnsToContents()
         for i in range(size):
-            for j in range(3):
+            for j in range(size):
                 self.table.setItem(i, j, QTableWidgetItem(str(data[i][j])))
-        # self.table.resizeColumnsToContents()
+        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+
 
 
     def find(self):
 
-        findPredicate = self.textEdit.text()
-        result = self.postgres.findData(findPredicate)
+        findPredicate = self.textEdit.text()#Взаимодействия с текстовым полем
+        result = self.postgres.findData(findPredicate)#Запрос на поиск в бд
         size = len(result)
         print(size)
         self.table.setRowCount(size)

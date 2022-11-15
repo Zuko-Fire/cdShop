@@ -1,7 +1,7 @@
 import datetime
 from ConnectedSettings import user,password,host,port,db_name
 
-import psycopg2
+import psycopg2      # реализация библиотеки для бд
 from psycopg2 import Error
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
@@ -52,6 +52,22 @@ class PostgreS():
         result = []
         result = self.cursor.fetchall()
         return result
+
+
+    def getColumn(self):
+        self.cursor.execute(f'SELECT column_name FROM information_schema.columns ' + "WHERE table_name = 'product' and table_schema = 'public';")
+        self.connection.commit()
+        result = []
+        result = self.cursor.fetchall()
+        size = len(result)
+        newResult = []
+        for i in range(size):
+            newResult.append(str(result[i]).replace('(','').replace(')','').replace(',','').replace("'",""))
+
+        return newResult
+
+
+
 
 
 
