@@ -35,7 +35,9 @@ class PostgreS():
 
     def findData(self,findPredicate):
 
-        self.cursor.execute(f'SELECT * FROM public."product" WHERE title LIKE ' + f"'%{findPredicate}%'")
+        findPredicate = findPredicate.lower()
+
+        self.cursor.execute(f'SELECT * FROM public."product" WHERE lower (title) LIKE ' + f"'%{findPredicate}%'")
         self.connection.commit()
         result = []
         result = self.cursor.fetchall()

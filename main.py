@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QApplication, QMainWindow, QGridLayout, QWidget, QTableWidget, QTableWidgetItem, \
-    QHBoxLayout, QVBoxLayout, QPushButton, QTextEdit, QPlainTextEdit
+    QHBoxLayout, QVBoxLayout, QPushButton, QTextEdit, QPlainTextEdit,QLineEdit
 from PyQt5.QtCore import Qt
 from  PostgreS import PostgreS
 
@@ -12,7 +12,7 @@ class Program():
         self.table = QTableWidget()
         self.mainLayout = QVBoxLayout()
         self.girdlayout = QGridLayout()
-        self.textEdit = QTextEdit('поиск')
+        self.textEdit = QLineEdit('поиск')
         self.updateButton = QPushButton('Обновить')
         self.findButton = QPushButton('Найти')
         self.layoutTools = QHBoxLayout()
@@ -20,7 +20,7 @@ class Program():
 
     def widgets(self):
         # self.textEdit.setFixedSize(1000,50)
-        self.textEdit.setFixedHeight(32)
+        # self.textEdit.setFixedHeight(32)
         self.table = self.table
         self.table.setColumnCount(3)
         self.table.setRowCount(1)
@@ -42,9 +42,9 @@ class Program():
         self.table.resizeColumnToContents(1)
         self.table.resizeColumnToContents(0)
         self.girdlayout.addWidget(self.table)
-        self.layoutTools.addWidget(self.updateButton, alignment=Qt.AlignLeft)
-        self.layoutTools.addWidget(self.textEdit, alignment=Qt.AlignHCenter)
-        self.layoutTools.addWidget(self.findButton, alignment=Qt.AlignRight)
+        self.layoutTools.addWidget(self.updateButton, alignment=Qt.AlignLeft,stretch=4)
+        self.layoutTools.addWidget(self.textEdit, alignment=Qt.AlignRight,stretch=1000)
+        self.layoutTools.addWidget(self.findButton, alignment=Qt.AlignRight,stretch=4)
         self.layoutTools.setSpacing(10)
         self.mainLayout.addLayout(self.layoutTools)
         self.mainLayout.addLayout(self.girdlayout)
@@ -72,7 +72,7 @@ class Program():
 
     def find(self):
 
-        findPredicate = self.textEdit.toPlainText()
+        findPredicate = self.textEdit.text()
         result = self.postgres.findData(findPredicate)
         size = len(result)
         print(size)
